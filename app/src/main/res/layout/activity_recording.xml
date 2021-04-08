@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/recordingActivity"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".RecordingActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/audioFilesRecycler"
+        android:layout_width="0dp"
+        app:layout_constraintBottom_toTopOf="@id/timerChronometer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp" />
+
+    <Chronometer
+        android:id="@+id/timerChronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
+        android:textColor="#283CAB"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/audioFilesRecycler"
+        app:layout_constraintBottom_toTopOf="@id/coordinatorLayout"
+        tools:ignore="NotSibling" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/timerChronometer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:backgroundTint="#3F51B5"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/recordingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:maxImageSize="@android:dimen/app_icon_size"
+            android:contentDescription="@string/record_text"
+            app:backgroundTint="#D3CDCD"
+            app:tint="#3F51B5"
+            app:layout_anchor="@id/bottomAppBar"
+            app:srcCompat="@drawable/microphone_off" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
