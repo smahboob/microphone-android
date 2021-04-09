@@ -6,24 +6,26 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/card_border"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/fileName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.04"
-        tools:text="Recording 0001 - 02/06/2021"
-        android:gravity="center"
-        android:textSize="16sp"/>
+        tools:text="Recording 0001 - 02/06/2021" />
 
     <Button
         android:id="@+id/playButton"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@android:drawable/ic_media_play"
         app:backgroundTint="#3F51B5"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,8 +35,8 @@
 
     <Button
         android:id="@+id/stopButton"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="25dp"
+        android:layout_height="30dp"
         android:background="@android:drawable/ic_media_pause"
         app:backgroundTint="#3F51B5"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,8 +47,8 @@
 
     <Button
         android:id="@+id/deleteButton"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@android:drawable/ic_menu_delete"
         app:backgroundTint="#AE1D12"
         app:layout_constraintBottom_toBottomOf="parent"
