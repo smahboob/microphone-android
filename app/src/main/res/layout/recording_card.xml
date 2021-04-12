@@ -24,10 +24,10 @@
 
     <Button
         android:id="@+id/playButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="@android:drawable/ic_media_play"
-        app:backgroundTint="#3F51B5"
+        app:backgroundTint="@color/notInUsePlayButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/stopButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,10 +35,10 @@
 
     <Button
         android:id="@+id/stopButton"
-        android:layout_width="25dp"
+        android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@android:drawable/ic_media_pause"
-        app:backgroundTint="#3F51B5"
+        android:background="@drawable/ic_baseline_stop_circle"
+        app:backgroundTint="@color/stopButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/deleteButton"
         app:layout_constraintStart_toEndOf="@id/playButton"
@@ -47,10 +47,10 @@
 
     <Button
         android:id="@+id/deleteButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@android:drawable/ic_menu_delete"
-        app:backgroundTint="#AE1D12"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/ic_baseline_delete"
+        app:backgroundTint="@color/deleteButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/stopButton"

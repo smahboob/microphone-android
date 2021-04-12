@@ -61,9 +61,7 @@ public class RecordingActivity extends AppCompatActivity {
 
         updateRecyclerView();
 
-        recording_button.setOnClickListener(v -> {
-            updateRecordingStatus();
-        });
+        recording_button.setOnClickListener(v -> updateRecordingStatus());
     }
 
     private void updateRecyclerView() {
@@ -105,7 +103,7 @@ public class RecordingActivity extends AppCompatActivity {
     }
 
     private void startRecording() {
-        SimpleDateFormat dataFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.US);
+        SimpleDateFormat dataFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss", Locale.US);
 
         Date now = new Date();
         String recordPath = getExternalFilesDir("/").getAbsolutePath();
@@ -125,7 +123,6 @@ public class RecordingActivity extends AppCompatActivity {
             Snackbar.make(findViewById(R.id.recordingActivity),"Failed to record!",Snackbar.LENGTH_SHORT).show();
         }
         mediaRecorder.start();
-        Log.d("TAG:", "Recorded in "+ recordPath + "/" + recordFile);
         Snackbar.make(findViewById(R.id.recordingActivity),"Recording Started!",Snackbar.LENGTH_SHORT).show();
 
     }
@@ -157,9 +154,6 @@ public class RecordingActivity extends AppCompatActivity {
             if (grantResults.length > 0) {
                 boolean permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 boolean permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                Log.d("TAG : ", String.valueOf(grantResults[0]));
-                Log.d("TAG : ", String.valueOf(grantResults[1]));
-
                 if (permissionToRecord && permissionToStore) {
                     Snackbar.make(findViewById(R.id.recordingActivity), "Permission Granted!", Snackbar.LENGTH_LONG).show();
                     updateRecordingStatus();

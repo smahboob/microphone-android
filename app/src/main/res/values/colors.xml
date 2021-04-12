@@ -11,4 +11,13 @@
     <color name="off">#FF3F51B5</color>
     <color name="onBackground">#EA9797</color>
     <color name="offBackground">#D3CDCD</color>
+
+    <color name="notInUsePlayButton">#0E9509</color>
+    <color name="inUsePlayButton">#3F51B5</color>
+
+    <color name="stopButton">#0E9509</color>
+    <color name="stopButtonWhilePlaying">#DC2417</color>
+
+    <color name="deleteButton">#E85045</color>
+
 </resources>

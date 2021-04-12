@@ -1,5 +1,7 @@
 package com.android.fandm.microphone;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -35,12 +38,18 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         this.audio_files = audio_files;
     }
 
-    public void removeItem(int position) {
-        audio_files.get(position).delete();
-        audio_files.remove(position);
-        notifyItemRemoved(position);
+    public void removeItem(@NonNull RecordingAdapter.ViewHolder holder, int position) {
+        if (audio_files.get(position).delete()) {
+            audio_files.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, audio_files.size());
+        }
+        else{
+            Snackbar.make(holder.itemView.getRootView().findViewById(R.id.recordingActivity),"Failed to Delete Audio File!", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull RecordingAdapter.ViewHolder holder, int position) {
         File file = audio_files.get(position);
@@ -51,7 +60,8 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         }
         Button delete = holder.deleteButton;
         delete.setOnClickListener(v -> {
-            removeItem(position);
+            removeItem(holder, position);
+            Snackbar.make(holder.itemView.getRootView().findViewById(R.id.recordingActivity),"Deleted Audio File!", Snackbar.LENGTH_SHORT).show();
         });
     }
 
@@ -69,9 +79,6 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
     }
 
 
-
-    //new class
-    //container to provide easy access to view that represent each row of the list
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView fileName;
@@ -80,16 +87,18 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         Button deleteButton;
         private MediaPlayer mediaPlayer = null;
         private boolean playing = false;
-
-        public ViewHolder(@NonNull View itemView) {
+        private boolean paused = false;
+        private ViewHolder(@NonNull View itemView) {
             super(itemView);
             fileName = itemView.findViewById(R.id.fileName);
             playButton = itemView.findViewById(R.id.playButton);
             stopButton = itemView.findViewById(R.id.stopButton);
             deleteButton = itemView.findViewById(R.id.deleteButton);
         }
+        private int pausedAt;
 
         //update the view inside of the view holder with the data
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         public void bind(File file) throws FileNotFoundException {
             String name = file.getName();
             fileName.setText(name);
@@ -98,23 +107,49 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
             FileInputStream fis = new FileInputStream(tempFile);
 
             playButton.setOnClickListener(v -> {
-               initializeMediaPlayer(fis);
-            });
-
-            stopButton.setOnClickListener(v -> {
-                if(playing){
-                    mediaPlayer.release();
-                    mediaPlayer = null;
+                //this is when u pause because already playing
+                if(playing && !paused){
+                    mediaPlayer.pause();
+                    playButton.setBackground(ContextCompat.getDrawable(itemView.getContext(), android.R.drawable.ic_media_play));
+                    playButton.setBackgroundTintList(ColorStateList.valueOf(itemView.getContext().getResources().getColor(R.color.notInUsePlayButton)));
+                    pausedAt = mediaPlayer.getCurrentPosition();
+                    Snackbar.make(itemView.getRootView().findViewById(R.id.recordingActivity),"Paused Recording!", Snackbar.LENGTH_SHORT).show();
+                    paused = true;
+                }
+                //this is case when paused in middle of playing
+                else if(playing){
+                    playButton.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_baseline_pause));
+                    mediaPlayer.seekTo(pausedAt);
+                    mediaPlayer.start();
+                    Snackbar.make(itemView.getRootView().findViewById(R.id.recordingActivity),"Resumed Recording!", Snackbar.LENGTH_SHORT).show();
+                    paused = false;
+                }
+                //this is when not playing
+                else if(!paused){
+                    playButton.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_baseline_pause));
+                    stopButton.setBackgroundTintList(ColorStateList.valueOf(itemView.getContext().getResources().getColor(R.color.stopButtonWhilePlaying)));
+                    initializeMediaPlayer(fis,itemView);
                 }
             });
 
-            deleteButton.setOnClickListener(v -> {
-                file.delete();
-
+            stopButton.setOnClickListener(v -> {
+                stopButton.setBackgroundTintList(ColorStateList.valueOf(itemView.getContext().getResources().getColor(R.color.stopButton)));
+                if(playing){
+                    paused = false;
+                    playing = false;
+                    stopButton.setEnabled(false);
+                    deleteButton.setEnabled(true);
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                    Snackbar.make(itemView.getRootView().findViewById(R.id.recordingActivity),"Stopped Playing Audio File!", Snackbar.LENGTH_SHORT).show();
+                    playButton.setBackground(ContextCompat.getDrawable(itemView.getContext(), android.R.drawable.ic_media_play));
+                    playButton.setBackgroundTintList(ColorStateList.valueOf(itemView.getContext().getResources().getColor(R.color.notInUsePlayButton)));
+                }
             });
         }
 
-        private void initializeMediaPlayer(FileInputStream fileInputStream) {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        private void initializeMediaPlayer(FileInputStream fileInputStream, View itemView) {
             if(mediaPlayer == null)
                 mediaPlayer = new MediaPlayer();
             try {
@@ -124,15 +159,25 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
                 mediaPlayer.prepare();
             } catch (Exception e) {
                 Log.d("TAG",e.toString());
+                Snackbar.make(itemView.getRootView().findViewById(R.id.recordingActivity),"Error Playing Audio File!", Snackbar.LENGTH_SHORT).show();
             }
             mediaPlayer.setOnPreparedListener(mp -> {
+                stopButton.setEnabled(true);
+                deleteButton.setEnabled(false);
                 mediaPlayer.start();
                 playing = true;
+                Snackbar.make(itemView.getRootView().findViewById(R.id.recordingActivity),"Playing Audio File!", Snackbar.LENGTH_SHORT).show();
             });
             mediaPlayer.setOnCompletionListener(mp -> {
+                stopButton.setEnabled(false);
+                deleteButton.setEnabled(true);
                 mediaPlayer.release();
                 mediaPlayer = null;
                 playing = false;
+                paused = false;
+                stopButton.setBackgroundTintList(ColorStateList.valueOf(itemView.getContext().getResources().getColor(R.color.stopButton)));
+                playButton.setBackground(ContextCompat.getDrawable(itemView.getContext(), android.R.drawable.ic_media_play));
+                playButton.setBackgroundTintList(ColorStateList.valueOf(itemView.getContext().getResources().getColor(R.color.notInUsePlayButton)));
             });
         }
     }
