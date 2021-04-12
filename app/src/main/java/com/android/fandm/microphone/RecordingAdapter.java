@@ -1,5 +1,7 @@
 package com.android.fandm.microphone;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
@@ -60,8 +62,15 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         }
         Button delete = holder.deleteButton;
         delete.setOnClickListener(v -> {
-            removeItem(holder, position);
-            Snackbar.make(holder.itemView.getRootView().findViewById(R.id.recordingActivity),"Deleted Audio File!", Snackbar.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
+            String deleteMessage = "Are you sure you want to delete: " + audio_files.get(position).getName();
+            builder.setMessage(deleteMessage).setPositiveButton("Yes", (dialog, which) -> {
+                removeItem(holder, position);
+                Snackbar.make(holder.itemView.getRootView().findViewById(R.id.recordingActivity),"Deleted Audio File!", Snackbar.LENGTH_SHORT).show();
+            }).setNegativeButton("Cancel", null);
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
     }
 
