@@ -9,3 +9,5 @@
 - [x] Pause the recording / Resume the recording
 - [x] Stop the recording
 - [x] Delete the recording
+
+![screenshot1](https://user-images.githubusercontent.com/59817340/114566368-3078df80-9c40-11eb-9c30-2848d0d9814d.png)
