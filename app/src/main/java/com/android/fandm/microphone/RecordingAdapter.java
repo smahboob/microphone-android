@@ -60,6 +60,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
         Button delete = holder.deleteButton;
         delete.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
